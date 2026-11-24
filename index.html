@@ -3,20 +3,125 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Duplô</title>
+<title>Duplô: Jogo da Memória</title>
+<meta name="description" content="Duplô é um jogo da memória para Android, com vários modos, Desafio do dia e ranking. Brinque de lembrar.">
+<meta name="theme-color" content="#0a0e5c">
+<link rel="icon" href="img/icone.png">
+<meta property="og:title" content="Duplô: Jogo da Memória">
+<meta property="og:description" content="Vários modos, Desafio do dia e ranking. Brinque de lembrar.">
+<meta property="og:image" content="https://gabriellapa2303.github.io/img/icone.png">
 <style>
-  :root { --fundo: #faf8f4; --texto: #1d1b22; --destaque: #6b4fd8; }
-  @media (prefers-color-scheme: dark) { :root { --fundo: #121117; --texto: #eeeaf5; --destaque: #b4a3ff; } }
-  body { margin: 0; background: var(--fundo); color: var(--texto); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 720px; margin: 0 auto; padding: 48px 16px; }
-  a { color: var(--destaque); }
+  @font-face { font-family: 'Fredoka'; src: url('fonts/fredoka.woff2') format('woff2'); font-weight: 300 700; font-display: swap; }
+  @font-face { font-family: 'Catamaran'; src: url('fonts/catamaran-500.woff2') format('woff2'); font-weight: 400 500; font-display: swap; }
+  @font-face { font-family: 'Catamaran'; src: url('fonts/catamaran-700.woff2') format('woff2'); font-weight: 600 700; font-display: swap; }
+  :root {
+    --bg: #0a0e5c; --bg-top: #1b25b8; --card: #141c9e; --linha: #2a35c4;
+    --text: #f5f7ff; --text-2: #c3c9ff; --ouro: #ffd84a; --ouro-2: #ffb21e; --on-ouro: #2a1a00;
+    --display: 'Fredoka', 'Catamaran', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0; color: var(--text);
+    background: radial-gradient(1200px 700px at 20% -10%, var(--bg-top), transparent 70%), var(--bg);
+    font: 18px/1.6 'Catamaran', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  a { color: var(--ouro); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+
+  header.hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; padding: 72px 0 56px; }
+  .marca img { width: 72px; height: 72px; border-radius: 18px; box-shadow: 0 8px 24px #00000055; display: block; margin-bottom: 20px; }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(44px, 7vw, 68px); line-height: 1; margin: 0; }
+  .slogan { font-family: var(--display); font-weight: 500; color: var(--ouro); font-size: clamp(22px, 3vw, 28px); margin: 8px 0 20px; }
+  .lead { color: var(--text-2); font-size: 19px; max-width: 34ch; margin: 0 0 28px; }
+  .loja {
+    display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 16px;
+    background: linear-gradient(160deg, var(--ouro), var(--ouro-2)); color: var(--on-ouro);
+    font-family: var(--display); font-weight: 600; font-size: 19px; line-height: 1.15;
+    box-shadow: 0 5px 0 #b0700f, 0 12px 24px #00000044;
+  }
+  .loja small { display: block; font-family: 'Catamaran', sans-serif; font-weight: 600; font-size: 13px; opacity: .75; }
+  .telefone { justify-self: center; position: relative; isolation: isolate; }
+  .telefone img { width: min(300px, 70vw); height: auto; aspect-ratio: 9 / 16; border-radius: 32px; border: 6px solid #ffffff18; box-shadow: 0 30px 60px #00000066; display: block; transform: rotate(3deg); }
+  .telefone::before { content: ''; position: absolute; inset: 8% -14% 8% 14%; background: #6b5cff55; border-radius: 40px; transform: rotate(-6deg); z-index: -1; }
+
+  section { padding: 56px 0; border-top: 1px solid #ffffff14; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: clamp(28px, 4vw, 36px); margin: 0 0 8px; }
+  .sub { color: var(--text-2); margin: 0 0 32px; }
+
+  .recursos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .recurso { background: var(--card); border: 1px solid var(--linha); border-radius: 20px; padding: 24px; }
+  .recurso h3 { font-family: var(--display); font-weight: 600; font-size: 21px; margin: 0 0 6px; }
+  .recurso p { margin: 0; color: var(--text-2); font-size: 17px; }
+
+  .telas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .telas figure { margin: 0; }
+  .telas img { width: 100%; height: auto; aspect-ratio: 9 / 16; border-radius: 20px; display: block; border: 1px solid #ffffff1f; }
+  .telas figcaption { color: var(--text-2); font-size: 15px; text-align: center; margin-top: 8px; }
+
+  .links { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .links a { display: block; background: var(--card); border: 1px solid var(--linha); border-radius: 18px; padding: 20px 22px; text-decoration: none; color: var(--text); transition: border-color .15s ease; }
+  .links a:hover, .links a:focus-visible { border-color: var(--ouro); }
+  .links a:focus-visible { outline: 2px solid var(--ouro); outline-offset: 3px; }
+  .links strong { font-family: var(--display); font-weight: 600; font-size: 20px; display: block; }
+  .links span { color: var(--text-2); font-size: 16px; }
+
+  footer { padding: 32px 0 48px; color: var(--text-2); font-size: 15px; border-top: 1px solid #ffffff14; }
+
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    header.hero { grid-template-columns: 1fr; padding: 40px 0 32px; gap: 40px; }
+    .telefone img { transform: none; }
+    .telas { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 62%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; }
+    .telas figure { scroll-snap-align: start; }
+  }
 </style>
 </head>
 <body>
-<main>
-  <h1>Duplô: Jogo da Memória</h1>
-  <p>Jogo da memória com vários modos, Desafio do dia e ranking.</p>
-  <p><a href="duplo/privacidade/">Política de Privacidade</a></p>
-</main>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <div class="marca"><img src="img/icone.png" alt="" width="72" height="72"></div>
+      <h1>Duplô</h1>
+      <p class="slogan">Brinque de lembrar.</p>
+      <p class="lead">Jogo da memória com vários modos, um desafio novo todo dia e ranking. Partidas curtas e sem cadastro obrigatório.</p>
+      <div class="loja"><span><small>Em breve no</small>Google Play</span></div>
+    </div>
+    <div class="telefone"><img src="img/partida.jpg" alt="Partida do modo Clássico com cartas viradas" width="540" height="960"></div>
+  </header>
+
+  <section>
+    <h2>Por que jogar</h2>
+    <p class="sub">O jogo da memória de sempre, com variações que treinam a cabeça de jeitos diferentes.</p>
+    <div class="recursos">
+      <div class="recurso"><h3>Vários modos</h3><p>Clássico, Relâmpago, Dança, Trio, Mosaico, Duelo e outros.</p></div>
+      <div class="recurso"><h3>Desafio do dia</h3><p>Um tabuleiro novo por dia. Jogue todo dia e mantenha a sequência.</p></div>
+      <div class="recurso"><h3>Ranking</h3><p>Com uma conta, você guarda recordes e disputa o ranking.</p></div>
+      <div class="recurso"><h3>Conta opcional</h3><p>Abra e jogue. A conta só serve para salvar o progresso.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Telas</h2>
+    <p class="sub">Um pouco do que tem lá dentro.</p>
+    <div class="telas">
+      <figure><img src="img/menu.jpg" alt="Menu com os modos de jogo" width="540" height="960" loading="lazy"><figcaption>Menu</figcaption></figure>
+      <figure><img src="img/partida.jpg" alt="Partida no modo Clássico" width="540" height="960" loading="lazy"><figcaption>Clássico</figcaption></figure>
+      <figure><img src="img/mosaico.jpg" alt="Partida no modo Mosaico" width="540" height="960" loading="lazy"><figcaption>Mosaico</figcaption></figure>
+      <figure><img src="img/resultado.jpg" alt="Tela de resultado da partida" width="540" height="960" loading="lazy"><figcaption>Resultado</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Ajuda e privacidade</h2>
+    <p class="sub">Dúvidas e pedidos: use o e-mail de suporte que aparece na página do Duplô no Google Play.</p>
+    <div class="links">
+      <a href="duplo/privacidade/"><strong>Política de Privacidade</strong><span>Quais dados o jogo usa e por quê.</span></a>
+      <a href="https://central-duplo.oopleb.easypanel.host/excluir-conta.html"><strong>Excluir minha conta</strong><span>Apague a conta e os dados dela, sem precisar do app.</span></a>
+    </div>
+  </section>
+
+  <footer>© 2026 Duplô: Jogo da Memória</footer>
+</div>
 </body>
 </html>
